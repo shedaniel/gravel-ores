@@ -62,24 +62,24 @@ public class GravelOres implements ModInitializer {
         register("lapis", new OreInformation(new Identifier("lapis_lazuli"), new UniformLootTableRange(4, 9), new Pair<>(2, 5), new SurfaceGenConfig(6, 0.004f, 0.5f)).generateRecipes());
         register("diamond", new OreInformation(new Identifier("diamond"), new ConstantLootTableRange(1), new Pair<>(3, 7), new SurfaceGenConfig(2, 0.002f, 0.6f)).generateRecipes());
         if (FabricLoader.getInstance().isModLoaded("cotton-resources")) {
-            registerCottonResource("aluminum", new OreInformation(new SurfaceGenConfig(6, 0.007f, 0.6f)));
-            registerCottonResource("copper", new OreInformation(new SurfaceGenConfig(10, 0.004f, 0.4f)));
-            registerCottonResource("iridium", new OreInformation(new SurfaceGenConfig(3, 0.003f, 0.6f)));
-            registerCottonResource("lead", new OreInformation(new SurfaceGenConfig(5, 0.005f, 0.5f)));
-            registerCottonResource("osmium", new OreInformation(new SurfaceGenConfig(5, 0.0025f, 0.6f)));
-            registerCottonResource("palladium", new OreInformation(new SurfaceGenConfig(5, 0.0025f, 0.6f)));
-            registerCottonResource("platinum", new OreInformation(new SurfaceGenConfig(5, 0.0025f, 0.6f)));
-            registerCottonResource("silver", new OreInformation(new SurfaceGenConfig(5, 0.005f, 0.5f)));
-            registerCottonResource("tin", new OreInformation(new SurfaceGenConfig(6, 0.007f, 0.5f)));
-            registerCottonResource("titanium", new OreInformation(new SurfaceGenConfig(5, 0.005f, 0.75f)));
-            registerCottonResource("tungsten", new OreInformation(new SurfaceGenConfig(5, 0.005f, 0.5f)));
-            registerCottonResource("uranium", new OreInformation(new SurfaceGenConfig(5, 0.005f, 0.75f)));
-            registerCottonResource("zinc", new OreInformation(new SurfaceGenConfig(6, 0.007f, 0.5f)));
-            registerCottonResource("ruby", new OreInformation(new Identifier("c", "ruby"), new ConstantLootTableRange(1), OreInformation.EMPTY_XP, new SurfaceGenConfig(1, 0.01f, 0.7f)));
-            registerCottonResource("topaz", new OreInformation(new Identifier("c", "topaz"), new ConstantLootTableRange(1), OreInformation.EMPTY_XP, new SurfaceGenConfig(1, 0.01f, 0.7f)));
-            registerCottonResource("sapphire", new OreInformation(new Identifier("c", "sapphire"), new ConstantLootTableRange(1), OreInformation.EMPTY_XP, new SurfaceGenConfig(1, 0.01f, 0.7f)));
-            registerCottonResource("peridot", new OreInformation(new Identifier("c", "peridot"), new ConstantLootTableRange(1), OreInformation.EMPTY_XP, new SurfaceGenConfig(1, 0.01f, 0.7f)));
-            registerCottonResource("amethyst", new OreInformation(new Identifier("c", "amethyst"), new ConstantLootTableRange(1), OreInformation.EMPTY_XP, new SurfaceGenConfig(1, 0.01f, 0.7f)));
+            registerCottonResource("aluminum", new OreInformation(new SurfaceGenConfig(3, 0.007f, 0.6f)));
+            registerCottonResource("copper", new OreInformation(new SurfaceGenConfig(5, 0.004f, 0.4f)));
+            registerCottonResource("iridium", new OreInformation(new SurfaceGenConfig(2, 0.003f, 0.6f)));
+            registerCottonResource("lead", new OreInformation(new SurfaceGenConfig(2, 0.005f, 0.5f)));
+            registerCottonResource("osmium", new OreInformation(new SurfaceGenConfig(2, 0.0025f, 0.6f)));
+            registerCottonResource("palladium", new OreInformation(new SurfaceGenConfig(2, 0.0025f, 0.6f)));
+            registerCottonResource("platinum", new OreInformation(new SurfaceGenConfig(2, 0.0025f, 0.6f)));
+            registerCottonResource("silver", new OreInformation(new SurfaceGenConfig(2, 0.005f, 0.5f)));
+            registerCottonResource("tin", new OreInformation(new SurfaceGenConfig(3, 0.007f, 0.5f)));
+            registerCottonResource("titanium", new OreInformation(new SurfaceGenConfig(2, 0.005f, 0.75f)));
+            registerCottonResource("tungsten", new OreInformation(new SurfaceGenConfig(2, 0.005f, 0.5f)));
+            registerCottonResource("uranium", new OreInformation(new SurfaceGenConfig(2, 0.005f, 0.75f)));
+            registerCottonResource("zinc", new OreInformation(new SurfaceGenConfig(3, 0.007f, 0.5f)));
+            registerCottonResource("ruby", new OreInformation(new Identifier("c", "ruby"), new ConstantLootTableRange(1), OreInformation.EMPTY_XP, new SurfaceGenConfig(1, 0.005f, 0.7f)));
+            registerCottonResource("topaz", new OreInformation(new Identifier("c", "topaz"), new ConstantLootTableRange(1), OreInformation.EMPTY_XP, new SurfaceGenConfig(1, 0.005f, 0.7f)));
+            registerCottonResource("sapphire", new OreInformation(new Identifier("c", "sapphire"), new ConstantLootTableRange(1), OreInformation.EMPTY_XP, new SurfaceGenConfig(1, 0.005f, 0.7f)));
+            registerCottonResource("peridot", new OreInformation(new Identifier("c", "peridot"), new ConstantLootTableRange(1), OreInformation.EMPTY_XP, new SurfaceGenConfig(1, 0.005f, 0.7f)));
+            registerCottonResource("amethyst", new OreInformation(new Identifier("c", "amethyst"), new ConstantLootTableRange(1), OreInformation.EMPTY_XP, new SurfaceGenConfig(1, 0.005f, 0.7f)));
         }
     }
     
