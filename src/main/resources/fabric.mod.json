@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "id": "gravel-ores",
+  "version": "${version}",
+  "name": "Gravel Ores",
+  "description": "Adds gravel ores",
+  "authors": [
+    "Me!"
+  ],
+  "license": "AGPL-3.0-only",
+  "icon": "icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "me.shedaniel.gravelores.GravelOres"
+    ],
+    "client": [
+      "me.shedaniel.gravelores.GravelOresClient"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.7.4",
+    "fabric": "*",
+    "minecraft": "1.15.x"
+  }
+}

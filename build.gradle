@@ -1,0 +1,73 @@
+plugins {
+    id "fabric-loom" version "0.4.3"
+    id "maven-publish"
+    id "com.wynprice.cursemaven" version "2.1.1"
+}
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+archivesBaseName = project.archives_base_name
+version = project.mod_version
+group = project.maven_group
+
+repositories {
+    mavenLocal()
+    jcenter()
+    maven { url "https://server.bbkr.space/artifactory/libs-release/" }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    modApi "com.lettuce.fudge:artifice:${project.artifice_version}"
+    include "com.lettuce.fudge:artifice:${project.artifice_version}"
+    modApi "io.github.cottonmc:cotton-resources:${project.cotton_resources_version}"
+//    modApi "curse.maven:randomly-adding-anything:${project.randomly_adding_anything_version}"
+//    modApi "curse.maven:vampirelib:${project.vampirelib_version}"
+}
+
+processResources {
+    inputs.property "version", project.version
+
+    from(sourceSets.main.resources.srcDirs) {
+        include "fabric.mod.json"
+        expand "version": project.version
+    }
+
+    from(sourceSets.main.resources.srcDirs) {
+        exclude "fabric.mod.json"
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier("sources")
+    from sourceSets.main.allSource
+}
+
+jar {
+    from "LICENSE"
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifact(remapJar) {
+                builtBy remapJar
+            }
+            artifact(sourcesJar) {
+                builtBy remapSourcesJar
+            }
+        }
+    }
+
+    repositories {
+    }
+}
