@@ -4,6 +4,7 @@ import com.mojang.datafixers.Dynamic;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorConfig;
 import net.minecraft.world.gen.feature.Feature;
@@ -17,6 +18,7 @@ public class SurfaceGenFeature extends Feature<SurfaceGenFeatureConfig> {
     }
     
     public boolean generate(IWorld iWorld, ChunkGenerator<? extends ChunkGeneratorConfig> chunkGenerator, Random random, BlockPos blockPos, SurfaceGenFeatureConfig config) {
+        if (iWorld.getWorld().getDimension().getType() != DimensionType.OVERWORLD) return false;
         while (true) {
             label48:
             {
