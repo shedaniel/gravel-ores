@@ -31,6 +31,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.decorator.Decorator;
 import net.minecraft.world.gen.feature.Feature;
+import org.apache.commons.lang3.text.WordUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -104,160 +105,173 @@ public class GravelOres implements ModInitializer {
     
     @Override
     public void onInitialize() {
-        for (Block block : Registry.BLOCK) handleBlock(Registry.BLOCK.getId(block), block);
-        RegistryEntryAddedCallback.event(Registry.BLOCK).register((rawId, identifier, block) -> handleBlock(identifier, block));
+        for (Block block : Registry.BLOCK) handleBlock(Registry.BLOCK.getId(block), block, false);
+        RegistryEntryAddedCallback.event(Registry.BLOCK).register((rawId, identifier, block) -> handleBlock(identifier, block, true));
         for (Biome biome : Registry.BIOME) handleBiome(biome);
         RegistryEntryAddedCallback.event(Registry.BIOME).register((rawId, identifier, biome) -> handleBiome(biome));
-        Artifice.registerData("gravel-ores:gravel-ores-data", pack -> {
-            pack.setDisplayName("Gravel Ores Data");
-            String[] cottonResources = new String[]{"copper", "silver", "lead", "zinc", "aluminum", "cobalt", "tin", "titanium", "tungsten", "platinum", "palladium", "osmium", "iridium", "coal_coke", "uranium", "ruby", "topaz", "amethyst", "peridot", "sapphire"};
-            pack.add(new Identifier("gravel-ores", "oregen/enable.json"), new StringResource("{\"ores\":[" + Stream.of(cottonResources).map(s -> "\"" + s + "\"").collect(Collectors.joining(",")) + "]}"));
-            REGISTERED_GRAVELS.forEach((material, identifier) -> {
-                OreInformation information = getGravelInformation(identifier);
-                if (information.isRegisterRecipes()) {
-                    pack.addSmeltingRecipe(new Identifier(identifier.getNamespace(), material + "_from_smelting_gravel"), recipe -> {
-                        recipe.experience(1.0);
-                        recipe.cookingTime(200);
-                        recipe.result(information.getDrop());
-                        recipe.ingredientItem(identifier);
-                    });
-                    pack.addBlastingRecipe(new Identifier(identifier.getNamespace(), material + "_from_blasting_gravel"), recipe -> {
-                        recipe.experience(1.0);
-                        recipe.cookingTime(100);
-                        recipe.result(information.getDrop());
-                        recipe.ingredientItem(identifier);
-                    });
-                }
-                pack.addBlockTag(new Identifier("enderman_holdable"), tag -> {
-                    tag.value(identifier).replace(false);
-                });
-                pack.addBlockTag(new Identifier("bamboo_plantable_on"), tag -> {
-                    tag.value(identifier).replace(false);
-                });
-                pack.addBlockTag(new Identifier("c", material + "_ore"), tag -> {
-                    tag.value(identifier).replace(false);
-                });
-                pack.addBlockTag(new Identifier("c", material + "_ores"), tag -> {
-                    tag.value(identifier).replace(false);
-                });
-                pack.addItemTag(new Identifier("c", material + "_ore"), tag -> {
-                    tag.value(identifier).replace(false);
-                });
-                pack.addItemTag(new Identifier("c", material + "_ores"), tag -> {
-                    tag.value(identifier).replace(false);
-                });
-                if (information.isDropOre()) {
-                    pack.addLootTable(new Identifier(identifier.getNamespace(), "blocks/" + identifier.getPath()), builder -> {
-                        builder.type(new Identifier("block")).pool(pool -> {
-                            pool.rolls(1)
-                                    .condition(new Identifier("survives_explosion"), objBuilder -> {})
-                                    .entry(entry -> {
-                                        entry.type(new Identifier("item"))
-                                                .name(identifier);
-                                    });
-                        });
-                    });
-                } else {
-                    String gravel = identifier.toString();
-                    String dropItem = information.getDrop().toString();
-                    String possibleCount;
-                    try {
-                        Field field = LootManager.class.getDeclaredField(FabricLoader.getInstance().getMappingResolver().mapFieldName("intermediary", "net.minecraft.class_60", "field_974", "Lcom/google/gson/Gson;"));
-                        field.setAccessible(true);
-                        Gson gson = (Gson) field.get(null);
-                        possibleCount = ",{\"function\":\"minecraft:set_count\",\"count\":" + gson.toJson(information.getDropCount()) + "}";
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                    String json = String.format(
-                            "{\n" +
-                            "  \"type\": \"minecraft:block\",\n" +
-                            "  \"pools\": [\n" +
-                            "    {\n" +
-                            "      \"rolls\": 1,\n" +
-                            "      \"entries\": [\n" +
-                            "        {\n" +
-                            "          \"type\": \"minecraft:alternatives\",\n" +
-                            "          \"children\": [\n" +
-                            "            {\n" +
-                            "              \"type\": \"minecraft:item\",\n" +
-                            "              \"conditions\": [\n" +
-                            "                {\n" +
-                            "                  \"condition\": \"minecraft:match_tool\",\n" +
-                            "                  \"predicate\": {\n" +
-                            "                    \"enchantments\": [\n" +
-                            "                      {\n" +
-                            "                        \"enchantment\": \"minecraft:silk_touch\",\n" +
-                            "                        \"levels\": {\n" +
-                            "                          \"min\": 1\n" +
-                            "                        }\n" +
-                            "                      }\n" +
-                            "                    ]\n" +
-                            "                  }\n" +
-                            "                }\n" +
-                            "              ],\n" +
-                            "              \"name\": \"%s\"\n" +
-                            "            },\n" +
-                            "            {\n" +
-                            "              \"type\": \"minecraft:item\",\n" +
-                            "              \"functions\": [\n" +
-                            "                {\n" +
-                            "                  \"function\": \"minecraft:apply_bonus\",\n" +
-                            "                  \"enchantment\": \"minecraft:fortune\",\n" +
-                            "                  \"formula\": \"minecraft:ore_drops\"\n" +
-                            "                },\n" +
-                            "                {\n" +
-                            "                  \"function\": \"minecraft:explosion_decay\"\n" +
-                            "                }\n" +
-                            possibleCount +
-                            "              ],\n" +
-                            "              \"name\": \"%s\"\n" +
-                            "            }\n" +
-                            "          ]\n" +
-                            "        }\n" +
-                            "      ]\n" +
-                            "    }\n" +
-                            "  ]\n" +
-                            "}", gravel, dropItem);
-                    pack.add(new Identifier(identifier.getNamespace(), "loot_tables/blocks/" + identifier.getPath() + ".json"), new StringResource(json));
-                }
+        if (FabricLoader.getInstance().isModLoaded("cotton-resources")) {
+            Artifice.registerData(new Identifier("gravel-ores:gravel-ores-cotton-resources-data"), pack -> {
+                pack.setDisplayName("Gravel Ores Cotton Resources Data");
+                String[] cottonResources = new String[]{"copper", "silver", "lead", "zinc", "aluminum", "cobalt", "tin", "titanium", "tungsten", "platinum", "palladium", "osmium", "iridium", "coal_coke", "uranium", "ruby", "topaz", "amethyst", "peridot", "sapphire"};
+                pack.add(new Identifier("gravel-ores", "oregen/enable.json"), new StringResource("{\"ores\":[" + Stream.of(cottonResources).map(s -> "\"" + s + "\"").collect(Collectors.joining(",")) + "]}"));
             });
-        });
+        }
     }
     
     private void handleBiome(Biome biome) {
-        REGISTERED_GRAVELS.forEach((material, identifier) -> {
-            OreInformation information = getGravelInformation(identifier);
-            if (information.getSurfaceGen() == OreInformation.EMPTY_SURFACE_GEN_CONFIG) return;
-            biome.addFeature(GenerationStep.Feature.LOCAL_MODIFICATIONS,
-                    SURFACE_GEN.configure(new SurfaceGenFeatureConfig(Registry.BLOCK.get(identifier).getDefaultState(), 0, Blocks.GRAVEL.getDefaultState(), information.getSurfaceGen().basePossibility))
-                            .createDecoratedFeature(SURFACE_GEN_DECORATOR.configure(information.getSurfaceGen())));
-        });
+        REGISTERED_GRAVELS.forEach((material, identifier) -> handleBiomeForGravel(biome, material, identifier));
     }
     
-    private void handleBlock(Identifier identifier, Block block) {
+    private void handleBiomeForGravel(Biome biome, String material, Identifier identifier) {
+        OreInformation information = getGravelInformation(identifier);
+        if (information.getSurfaceGen() == OreInformation.EMPTY_SURFACE_GEN_CONFIG) return;
+        biome.addFeature(GenerationStep.Feature.LOCAL_MODIFICATIONS,
+                SURFACE_GEN.configure(new SurfaceGenFeatureConfig(Registry.BLOCK.get(identifier).getDefaultState(), 0, Blocks.GRAVEL.getDefaultState(), information.getSurfaceGen().basePossibility))
+                        .createDecoratedFeature(SURFACE_GEN_DECORATOR.configure(information.getSurfaceGen())));
+    }
+    
+    private void handleBlock(Identifier identifier, Block block, boolean after) {
         if (identifier.getPath().endsWith("_ore")) {
             String material = identifier.getPath().substring(0, identifier.getPath().length() - 4);
             Identifier gravelId = new Identifier("gravel-ores", material + "_gravel");
             if (REGISTERED_GRAVELS.containsKey(material)) return;
-            OreInformation gravelDrop = getGravelInformation(gravelId);
-            if (gravelDrop != null) {
+            OreInformation information = getGravelInformation(gravelId);
+            if (information != null) {
                 if (identifier.getNamespace().equals("c") || identifier.getNamespace().equals("minecraft")) {
                     int miningLevel = getMiningLevel(block);
                     Block gravelBlock = new GravelOreBlock(
                             copyOfWithMaterial(SAND_REQUIRE_TOOL, MaterialColor.STONE, block)
                                     .sounds(BlockSoundGroup.GRAVEL)
                                     .breakByTool(FabricToolTags.SHOVELS, miningLevel),
-                            gravelDrop.getXp()
+                            information.getXp()
                     );
                     Item blockItem = new BlockItem(gravelBlock, new Item.Settings().group(ItemGroup.BUILDING_BLOCKS));
                     Registry.register(Registry.BLOCK, gravelId, gravelBlock);
                     Registry.register(Registry.ITEM, gravelId, blockItem);
                     REGISTERED_GRAVELS.put(material, gravelId);
                     LOGGER.info("Registered Gravel: " + gravelId + " from " + identifier + "@" + block.getClass().toString());
+                    if (after) {
+                        for (Biome biome : Registry.BIOME) {
+                            handleBiomeForGravel(biome, material, gravelId);
+                        }
+                    }
+                    addGravelData(gravelId, material, information);
                 }
             }
         }
+    }
+    
+    private void addGravelData(Identifier identifier, String material, OreInformation information) {
+        Artifice.registerData(new Identifier(identifier.toString() + "_data"), pack -> {
+            pack.setDisplayName("Gravel Ores: " + WordUtils.capitalize(identifier.getPath().replace('_', ' ')));
+            if (information.isRegisterRecipes()) {
+                pack.addSmeltingRecipe(new Identifier(identifier.getNamespace(), material + "_from_smelting_gravel"), recipe -> {
+                    recipe.experience(1.0);
+                    recipe.cookingTime(200);
+                    recipe.result(information.getDrop());
+                    recipe.ingredientItem(identifier);
+                });
+                pack.addBlastingRecipe(new Identifier(identifier.getNamespace(), material + "_from_blasting_gravel"), recipe -> {
+                    recipe.experience(1.0);
+                    recipe.cookingTime(100);
+                    recipe.result(information.getDrop());
+                    recipe.ingredientItem(identifier);
+                });
+            }
+            pack.addBlockTag(new Identifier("enderman_holdable"), tag -> {
+                tag.value(identifier).replace(false);
+            });
+            pack.addBlockTag(new Identifier("bamboo_plantable_on"), tag -> {
+                tag.value(identifier).replace(false);
+            });
+            pack.addBlockTag(new Identifier("c", material + "_ore"), tag -> {
+                tag.value(identifier).replace(false);
+            });
+            pack.addBlockTag(new Identifier("c", material + "_ores"), tag -> {
+                tag.value(identifier).replace(false);
+            });
+            pack.addItemTag(new Identifier("c", material + "_ore"), tag -> {
+                tag.value(identifier).replace(false);
+            });
+            pack.addItemTag(new Identifier("c", material + "_ores"), tag -> {
+                tag.value(identifier).replace(false);
+            });
+            if (information.isDropOre()) {
+                pack.addLootTable(new Identifier(identifier.getNamespace(), "blocks/" + identifier.getPath()), builder -> {
+                    builder.type(new Identifier("block")).pool(pool -> {
+                        pool.rolls(1)
+                                .condition(new Identifier("survives_explosion"), objBuilder -> {})
+                                .entry(entry -> {
+                                    entry.type(new Identifier("item"))
+                                            .name(identifier);
+                                });
+                    });
+                });
+            } else {
+                String gravel = identifier.toString();
+                String dropItem = information.getDrop().toString();
+                String possibleCount;
+                try {
+                    Field field = LootManager.class.getDeclaredField(FabricLoader.getInstance().getMappingResolver().mapFieldName("intermediary", "net.minecraft.class_60", "field_974", "Lcom/google/gson/Gson;"));
+                    field.setAccessible(true);
+                    Gson gson = (Gson) field.get(null);
+                    possibleCount = "{\"function\":\"minecraft:set_count\",\"count\":" + gson.toJson(information.getDropCount()) + "},";
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+                String json = String.format(
+                        "{\n" +
+                        "  \"type\": \"minecraft:block\",\n" +
+                        "  \"pools\": [\n" +
+                        "    {\n" +
+                        "      \"rolls\": 1,\n" +
+                        "      \"entries\": [\n" +
+                        "        {\n" +
+                        "          \"type\": \"minecraft:alternatives\",\n" +
+                        "          \"children\": [\n" +
+                        "            {\n" +
+                        "              \"type\": \"minecraft:item\",\n" +
+                        "              \"conditions\": [\n" +
+                        "                {\n" +
+                        "                  \"condition\": \"minecraft:match_tool\",\n" +
+                        "                  \"predicate\": {\n" +
+                        "                    \"enchantments\": [\n" +
+                        "                      {\n" +
+                        "                        \"enchantment\": \"minecraft:silk_touch\",\n" +
+                        "                        \"levels\": {\n" +
+                        "                          \"min\": 1\n" +
+                        "                        }\n" +
+                        "                      }\n" +
+                        "                    ]\n" +
+                        "                  }\n" +
+                        "                }\n" +
+                        "              ],\n" +
+                        "              \"name\": \"%s\"\n" +
+                        "            },\n" +
+                        "            {\n" +
+                        "              \"type\": \"minecraft:item\",\n" +
+                        "              \"functions\": [\n" +
+                        possibleCount +
+                        "                {\n" +
+                        "                  \"function\": \"minecraft:apply_bonus\",\n" +
+                        "                  \"enchantment\": \"minecraft:fortune\",\n" +
+                        "                  \"formula\": \"minecraft:ore_drops\"\n" +
+                        "                },\n" +
+                        "                {\n" +
+                        "                  \"function\": \"minecraft:explosion_decay\"\n" +
+                        "                }\n" +
+                        "              ],\n" +
+                        "              \"name\": \"%s\"\n" +
+                        "            }\n" +
+                        "          ]\n" +
+                        "        }\n" +
+                        "      ]\n" +
+                        "    }\n" +
+                        "  ]\n" +
+                        "}", gravel, dropItem);
+                pack.add(new Identifier(identifier.getNamespace(), "loot_tables/blocks/" + identifier.getPath() + ".json"), new StringResource(json));
+            }
+        });
     }
     
     private int getMiningLevel(Block block) {
