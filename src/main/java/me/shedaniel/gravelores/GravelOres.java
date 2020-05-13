@@ -10,8 +10,8 @@ import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricMaterialBuilder;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.fabricmc.fabric.impl.tool.attribute.ToolManagerImpl;
-import net.fabricmc.fabric.mixin.object.builder.BlockAccessor;
-import net.fabricmc.fabric.mixin.object.builder.BlockSettingsAccessor;
+import net.fabricmc.fabric.mixin.object.builder.AbstractBlockAccessor;
+import net.fabricmc.fabric.mixin.object.builder.AbstractBlockSettingsAccessor;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -291,18 +291,19 @@ public class GravelOres implements ModInitializer {
     }
     
     public static FabricBlockSettings copyOfWithMaterial(Material material, MaterialColor color, Block block) {
-        BlockAccessor sourceAccessor = (BlockAccessor) block;
+        AbstractBlockAccessor sourceAccessor = (AbstractBlockAccessor) block;
+        AbstractBlockSettingsAccessor otherSettingsAccessor = (AbstractBlockSettingsAccessor) sourceAccessor.getSettings();
         FabricBlockSettings settings = FabricBlockSettings.of(material, color);
-        BlockSettingsAccessor settingsAccessor = (BlockSettingsAccessor) settings;
+        AbstractBlockSettingsAccessor settingsAccessor = (AbstractBlockSettingsAccessor) settings;
         settingsAccessor.setMaterial(material);
-        settings.hardness(sourceAccessor.getHardness() * 0.7f);
-        settings.resistance(sourceAccessor.getResistance() * 0.5f);
-        settings.collidable(sourceAccessor.getCollidable());
-        settingsAccessor.setMaterialColor(color);
-        settings.sounds(sourceAccessor.getSoundGroup());
+        settings.hardness(otherSettingsAccessor.getHardness() * 0.7f);
+        settings.resistance(otherSettingsAccessor.getResistance() * 0.5f);
+        settings.collidable(otherSettingsAccessor.getCollidable());
+        settingsAccessor.setMaterialColorFactory((state) -> color);
+        settings.sounds(otherSettingsAccessor.getSoundGroup());
         settings.slipperiness(block.getSlipperiness());
         settings.velocityMultiplier(block.getVelocityMultiplier());
-        settingsAccessor.setOpaque(sourceAccessor.getOpaque());
+        settingsAccessor.setOpaque(otherSettingsAccessor.getOpaque());
         return settings;
     }
 }

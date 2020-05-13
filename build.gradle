@@ -1,5 +1,5 @@
 plugins {
-    id "fabric-loom" version "0.4.3"
+    id "fabric-loom" version "0.4.5"
     id "maven-publish"
     id "com.wynprice.cursemaven" version "2.1.1"
 }
@@ -15,17 +15,19 @@ repositories {
     mavenLocal()
     jcenter()
     maven { url "https://server.bbkr.space/artifactory/libs-release/" }
+    maven { url "https://dl.bintray.com/shedaniel/legacy-yarn-updated" }
 }
 
 dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    mappings "me.shedaniel:legacy-yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
+    modRuntime "me.shedaniel:RoughlyEnoughItems:${project.rei_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
     modApi "com.lettuce.fudge:artifice:${project.artifice_version}"
     include "com.lettuce.fudge:artifice:${project.artifice_version}"
-    modApi "io.github.cottonmc:cotton-resources:${project.cotton_resources_version}"
+//    modApi "io.github.cottonmc:cotton-resources:${project.cotton_resources_version}"
 //    modApi "curse.maven:randomly-adding-anything:${project.randomly_adding_anything_version}"
 //    modApi "curse.maven:vampirelib:${project.vampirelib_version}"
 }

@@ -2,11 +2,11 @@ package me.shedaniel.gravelores;
 
 import com.mojang.datafixers.Dynamic;
 import net.minecraft.block.BlockState;
+import net.minecraft.class_5281;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
 import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
-import net.minecraft.world.gen.chunk.ChunkGeneratorConfig;
 import net.minecraft.world.gen.feature.Feature;
 
 import java.util.Random;
@@ -17,23 +17,24 @@ public class SurfaceGenFeature extends Feature<SurfaceGenFeatureConfig> {
         super(configFactory);
     }
     
-    public boolean generate(IWorld iWorld, ChunkGenerator<? extends ChunkGeneratorConfig> chunkGenerator, Random random, BlockPos blockPos, SurfaceGenFeatureConfig config) {
-        if (iWorld.getWorld().getDimension().getType() != DimensionType.OVERWORLD) return false;
+    @Override
+    public boolean generate(class_5281 world, StructureAccessor accessor, ChunkGenerator generator, Random random, BlockPos pos, SurfaceGenFeatureConfig config) {
+        if (world.getWorld().getDimension().getType() != DimensionType.OVERWORLD) return false;
         while (true) {
             label48:
             {
-                if (blockPos.getY() > 3) {
-                    if (iWorld.isAir(blockPos.down())) {
+                if (pos.getY() > 3) {
+                    if (world.isAir(pos.down())) {
                         break label48;
                     }
                     
-                    BlockState block = iWorld.getBlockState(blockPos.down());
+                    BlockState block = world.getBlockState(pos.down());
                     if (!isDirt(block.getBlock()) && !isStone(block.getBlock()) && !block.isOpaque()) {
                         break label48;
                     }
                 }
                 
-                if (blockPos.getY() <= 3) {
+                if (pos.getY() <= 3) {
                     return false;
                 }
                 
@@ -45,20 +46,20 @@ public class SurfaceGenFeature extends Feature<SurfaceGenFeatureConfig> {
                     int m = i + random.nextInt(2);
                     float f = (float) (k + l + m) * 0.333F + 0.5F;
                     
-                    for (BlockPos blockPos2 : BlockPos.iterate(blockPos.add(-k, -l, -m), blockPos.add(k, l, m))) {
-                        if (blockPos2.getSquaredDistance(blockPos) <= (double) (f * f)) {
+                    for (BlockPos blockPos2 : BlockPos.iterate(pos.add(-k, -l, -m), pos.add(k, l, m))) {
+                        if (blockPos2.getSquaredDistance(pos) <= (double) (f * f)) {
                             boolean isBase = random.nextFloat() <= config.baseStatePercentage;
-                            iWorld.setBlockState(blockPos2, isBase ? config.baseState : config.oreState, 4);
+                            world.setBlockState(blockPos2, isBase ? config.baseState : config.oreState, 4);
                         }
                     }
                     
-                    blockPos = blockPos.add(-(i + 1) + random.nextInt(2 + i * 2), -random.nextInt(2), -(i + 1) + random.nextInt(2 + i * 2));
+                    pos = pos.add(-(i + 1) + random.nextInt(2 + i * 2), -random.nextInt(2), -(i + 1) + random.nextInt(2 + i * 2));
                 }
                 
                 return true;
             }
             
-            blockPos = blockPos.down();
+            pos = pos.down();
         }
     }
 }

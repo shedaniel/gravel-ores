@@ -5,7 +5,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
-import net.minecraft.world.gen.chunk.ChunkGeneratorConfig;
 import net.minecraft.world.gen.decorator.Decorator;
 
 import java.util.Random;
@@ -18,7 +17,8 @@ public class SurfaceGenDecorator extends Decorator<SurfaceGenConfig> {
         super(function);
     }
     
-    public Stream<BlockPos> getPositions(IWorld world, ChunkGenerator<? extends ChunkGeneratorConfig> chunkGenerator, Random random, SurfaceGenConfig config, BlockPos blockPos) {
+    @Override
+    public Stream<BlockPos> getPositions(IWorld world, ChunkGenerator generator, Random random, SurfaceGenConfig config, BlockPos pos) {
         int i = random.nextInt(config.count);
         int count = 0;
         for (int j = 0; j < i; j++) {
@@ -28,8 +28,8 @@ public class SurfaceGenDecorator extends Decorator<SurfaceGenConfig> {
             }
         }
         return IntStream.range(0, count).mapToObj((ix) -> {
-            int j = random.nextInt(16) + blockPos.getX();
-            int k = random.nextInt(16) + blockPos.getZ();
+            int j = random.nextInt(16) + pos.getX();
+            int k = random.nextInt(16) + pos.getZ();
             int l = world.getTopY(Heightmap.Type.MOTION_BLOCKING, j, k);
             return new BlockPos(j, l, k);
         });
