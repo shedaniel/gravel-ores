@@ -1,6 +1,6 @@
 package me.shedaniel.gravelores;
 
-import com.mojang.datafixers.Dynamic;
+import com.mojang.serialization.Codec;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.IWorld;
@@ -8,13 +8,12 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.decorator.Decorator;
 
 import java.util.Random;
-import java.util.function.Function;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class SurfaceGenDecorator extends Decorator<SurfaceGenConfig> {
-    public SurfaceGenDecorator(Function<Dynamic<?>, ? extends SurfaceGenConfig> function) {
-        super(function);
+    public SurfaceGenDecorator(Codec<SurfaceGenConfig> codec) {
+        super(codec);
     }
     
     @Override

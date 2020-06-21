@@ -7,7 +7,6 @@ import com.swordglowsblue.artifice.api.resource.StringResource;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricMaterialBuilder;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.fabricmc.fabric.impl.tool.attribute.ToolManagerImpl;
 import net.fabricmc.fabric.mixin.object.builder.AbstractBlockAccessor;
@@ -46,11 +45,10 @@ import java.util.stream.Stream;
 
 public class GravelOres implements ModInitializer {
     public static final Logger LOGGER = LogManager.getLogger("GravelOres");
-    private static final Material SAND_REQUIRE_TOOL = new FabricMaterialBuilder(MaterialColor.SAND).requiresTool().build();
     public static final Map<String, Identifier> REGISTERED_GRAVELS = new LinkedHashMap<>();
     public static final Map<Identifier, OreInformation> DEFAULT_INFO = Maps.newHashMap();
-    public static final Decorator<SurfaceGenConfig> SURFACE_GEN_DECORATOR = Registry.register(Registry.DECORATOR, new Identifier("gravel-ores", "surface_gen_config"), new SurfaceGenDecorator(SurfaceGenConfig::deserialize));
-    public static final Feature<SurfaceGenFeatureConfig> SURFACE_GEN = Registry.register(Registry.FEATURE, new Identifier("gravel-ores", "surface_gen"), new SurfaceGenFeature(SurfaceGenFeatureConfig::deserialize));
+    public static final Decorator<SurfaceGenConfig> SURFACE_GEN_DECORATOR = Registry.register(Registry.DECORATOR, new Identifier("gravel-ores", "surface_gen_config"), new SurfaceGenDecorator(SurfaceGenConfig.CODEC));
+    public static final Feature<SurfaceGenFeatureConfig> SURFACE_GEN = Registry.register(Registry.FEATURE, new Identifier("gravel-ores", "surface_gen"), new SurfaceGenFeature(SurfaceGenFeatureConfig.CODEC));
     public static final List<Function<Identifier, OreInformation>> INFO_PROVIDER = new ArrayList<>();
     
     static {
@@ -140,9 +138,10 @@ public class GravelOres implements ModInitializer {
                 if (identifier.getNamespace().equals("c") || identifier.getNamespace().equals("minecraft")) {
                     int miningLevel = getMiningLevel(block);
                     Block gravelBlock = new GravelOreBlock(
-                            copyOfWithMaterial(SAND_REQUIRE_TOOL, MaterialColor.STONE, block)
+                            copyOfWithMaterial(Material.SAND, MaterialColor.STONE, block)
                                     .sounds(BlockSoundGroup.GRAVEL)
-                                    .breakByTool(FabricToolTags.SHOVELS, miningLevel),
+                                    .breakByTool(FabricToolTags.SHOVELS, miningLevel)
+                                    .requiresTool(),
                             information.getXp()
                     );
                     Item blockItem = new BlockItem(gravelBlock, new Item.Settings().group(ItemGroup.BUILDING_BLOCKS));

@@ -1,11 +1,16 @@
 package me.shedaniel.gravelores;
 
-import com.google.common.collect.ImmutableMap;
-import com.mojang.datafixers.Dynamic;
-import com.mojang.datafixers.types.DynamicOps;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.gen.decorator.DecoratorConfig;
 
 public class SurfaceGenConfig implements DecoratorConfig {
+    public static final Codec<SurfaceGenConfig> CODEC = RecordCodecBuilder.create(instance ->
+            instance.group(
+                    Codec.INT.fieldOf("count").forGetter(SurfaceGenConfig::getCount),
+                    Codec.FLOAT.fieldOf("possibility").forGetter(SurfaceGenConfig::getPossibility),
+                    Codec.FLOAT.fieldOf("basePossibility").forGetter(SurfaceGenConfig::getBasePossibility)
+            ).apply(instance, SurfaceGenConfig::new));
     public final int count;
     public final float possibility;
     public final float basePossibility;
@@ -16,18 +21,15 @@ public class SurfaceGenConfig implements DecoratorConfig {
         this.basePossibility = basePossibility;
     }
     
-    public <T> Dynamic<T> serialize(DynamicOps<T> ops) {
-        return new Dynamic<>(ops, ops.createMap(ImmutableMap.of(
-                ops.createString("count"), ops.createInt(this.count),
-                ops.createString("possibility"), ops.createFloat(this.possibility),
-                ops.createString("base_possibility"), ops.createFloat(this.basePossibility)
-        )));
+    public int getCount() {
+        return count;
     }
     
-    public static SurfaceGenConfig deserialize(Dynamic<?> dynamic) {
-        int count = dynamic.get("count").asInt(0);
-        float possibility = dynamic.get("possibility").asFloat(0);
-        float basePossibility = dynamic.get("base_possibility").asFloat(0);
-        return new SurfaceGenConfig(count, possibility, basePossibility);
+    public float getPossibility() {
+        return possibility;
+    }
+    
+    public float getBasePossibility() {
+        return basePossibility;
     }
 }

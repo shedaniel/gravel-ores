@@ -1,25 +1,24 @@
 package me.shedaniel.gravelores;
 
-import com.mojang.datafixers.Dynamic;
+import com.mojang.serialization.Codec;
 import net.minecraft.block.BlockState;
-import net.minecraft.class_5281;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.feature.Feature;
 
 import java.util.Random;
-import java.util.function.Function;
 
 public class SurfaceGenFeature extends Feature<SurfaceGenFeatureConfig> {
-    public SurfaceGenFeature(Function<Dynamic<?>, ? extends SurfaceGenFeatureConfig> configFactory) {
-        super(configFactory);
+    public SurfaceGenFeature(Codec<SurfaceGenFeatureConfig> codec) {
+        super(codec);
     }
     
     @Override
-    public boolean generate(class_5281 world, StructureAccessor accessor, ChunkGenerator generator, Random random, BlockPos pos, SurfaceGenFeatureConfig config) {
-        if (world.getWorld().getDimension().getType() != DimensionType.OVERWORLD) return false;
+    public boolean generate(ServerWorldAccess world, StructureAccessor accessor, ChunkGenerator generator, Random random, BlockPos pos, SurfaceGenFeatureConfig config) {
+        if (world.getWorld().getDimension() != DimensionType.getOverworldDimensionType()) return false;
         while (true) {
             label48:
             {
