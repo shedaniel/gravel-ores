@@ -60,6 +60,14 @@ public final class GravelOreBlock extends GravelBlock {
     }
 
     @Override
+    public BlockState getPlacementState(final ItemPlacementContext context) {
+        context.getWorld().setBlockState(context.getBlockPos(), getDefaultState());
+        context.getWorld().breakBlock(context.getBlockPos(), true);
+        context.getStack().decrement(1);
+        return shouldBreak(context.getWorld(), context.getBlockPos(), context.getWorld().getBlockState(context.getBlockPos())) ? Blocks.AIR.getDefaultState() : super.getPlacementState(context);
+    }
+
+    @Override
     public void onStacksDropped(final BlockState state, final ServerWorld world, final BlockPos pos, final ItemStack stack) {
         super.onStacksDropped(state, world, pos, stack);
         if (EnchantmentHelper.getLevel(Enchantments.SILK_TOUCH, stack) == 0) {
@@ -79,7 +87,7 @@ public final class GravelOreBlock extends GravelBlock {
             if (direction != Direction.DOWN || state.getFluidState().isIn(FluidTags.WATER)) {
                 mutable.set(pos, direction);
                 state = world.getBlockState(mutable);
-                if (state.getFluidState().isIn(FluidTags.WATER) && !state.isSideSolidFullSquare(world, pos, direction.getOpposite())) return true;
+                if (state.getFluidState().isIn(FluidTags.WATER) && state.getFluidState().getLevel() > 1 && !state.isSideSolidFullSquare(world, pos, direction.getOpposite())) return true;
             }
         }
 
