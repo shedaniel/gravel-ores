@@ -1,0 +1,48 @@
+{
+  "type": "block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "alternatives",
+          "children": [
+            {
+              "type": "item",
+              "conditions": [
+                {
+                  "condition": "match_tool",
+                  "predicate": {
+                    "enchantments": [
+                      {
+                        "enchantment": "silk_touch",
+                        "levels": {
+                          "min": 1
+                        }
+                      }
+                    ]
+                  }
+                }
+              ],
+              "name": "gravel-ores:diamond_gravel"
+            },
+            {
+              "type": "item",
+              "functions": [
+                {
+                  "function": "apply_bonus",
+                  "enchantment": "fortune",
+                  "formula": "ore_drops"
+                },
+                {
+                  "function": "explosion_decay"
+                }
+              ],
+              "name": "diamond"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

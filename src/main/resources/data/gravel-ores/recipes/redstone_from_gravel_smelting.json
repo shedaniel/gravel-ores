@@ -1,0 +1,9 @@
+{
+  "type": "smelting",
+  "ingredient": {
+    "item": "gravel-ores:redstone_gravel"
+  },
+  "result": "redstone",
+  "experience": 0.7,
+  "cookingtime": 200
+}

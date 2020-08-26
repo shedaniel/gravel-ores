@@ -1,0 +1,9 @@
+{
+  "type": "smelting",
+  "ingredient": {
+    "item": "gravel-ores:gold_gravel"
+  },
+  "result": "gold_ingot",
+  "experience": 1.0,
+  "cookingtime": 200
+}

@@ -1,0 +1,9 @@
+{
+  "type": "blasting",
+  "ingredient": {
+    "item": "gravel-ores:lapis_gravel"
+  },
+  "result": "lapis_lazuli",
+  "experience": 0.2,
+  "cookingtime": 100
+}

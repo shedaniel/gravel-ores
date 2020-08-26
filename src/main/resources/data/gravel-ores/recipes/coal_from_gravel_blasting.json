@@ -1,0 +1,9 @@
+{
+  "type": "blasting",
+  "ingredient": {
+    "item": "gravel-ores:coal_gravel"
+  },
+  "result": "coal",
+  "experience": 0.1,
+  "cookingtime": 100
+}

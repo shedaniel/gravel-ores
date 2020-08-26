@@ -1,0 +1,9 @@
+{
+  "type": "blasting",
+  "ingredient": {
+    "item": "gravel-ores:diamond_gravel"
+  },
+  "result": "diamond",
+  "experience": 1.0,
+  "cookingtime": 100
+}

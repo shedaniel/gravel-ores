@@ -3,24 +3,30 @@
   "id": "gravel-ores",
   "version": "${version}",
   "name": "Gravel Ores",
-  "description": "Adds gravel ores",
+  "description": "Adds gravel ores.",
   "authors": [
+    "Bravarly",
     "shedaniel"
   ],
-  "license": "AGPL-3.0-only",
-  "icon": "icon.png",
+  "contact": {
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/gravel-ores-fabric",
+    "issues": "https://github.com/shedaniel/gravel-ores/issues",
+    "sources": "https://github.com/shedaniel/gravel-ores"
+  },
+  "license": "LGPL-3.0-only",
+  "icon": "assets/gravel-ores/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
       "me.shedaniel.gravelores.GravelOres"
-    ],
-    "client": [
-      "me.shedaniel.gravelores.GravelOresClient"
     ]
   },
+  "mixins": [
+    "gravel-ores.mixins.json"
+  ],
   "depends": {
-    "fabricloader": ">=0.7.4",
-    "fabric": ">=0.10.8",
-    "minecraft": "1.15.x"
+    "fabricloader": ">=0.9.0",
+    "fabric": ">=0.18.0",
+    "minecraft": "1.16.x"
   }
 }

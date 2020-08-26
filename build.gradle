@@ -1,33 +1,38 @@
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
+
 plugins {
-    id "fabric-loom" version "0.4.3"
+    id "fabric-loom" version "0.4-SNAPSHOT"
     id "maven-publish"
-    id "com.wynprice.cursemaven" version "2.1.1"
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
 archivesBaseName = project.archives_base_name
-version = project.mod_version
+version = project.mod_version + "+" + project.minecraft_version
 group = project.maven_group
 
 repositories {
-    mavenLocal()
-    jcenter()
-    maven { url "https://server.bbkr.space/artifactory/libs-release/" }
+    maven {
+        name = "CottonMC"
+        url = "https://server.bbkr.space/artifactory/libs-release/"
+    }
 }
 
 dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    modApi "com.lettuce.fudge:artifice:${project.artifice_version}"
-    include "com.lettuce.fudge:artifice:${project.artifice_version}"
-    modApi "io.github.cottonmc:cotton-resources:${project.cotton_resources_version}"
-//    modApi "curse.maven:randomly-adding-anything:${project.randomly_adding_anything_version}"
-//    modApi "curse.maven:vampirelib:${project.vampirelib_version}"
+
+    modImplementation "io.github.prospector:modmenu:${project.mod_menu_version}"
+
+    modImplementation "me.shedaniel:RoughlyEnoughItems:${project.rei_version}"
+
+    //modImplementation "io.github.cottonmc:cotton-resources:${project.cotton_resources_version}"
+
+    implementation "com.google.code.findbugs:jsr305:+"
 }
 
 processResources {
@@ -40,6 +45,22 @@ processResources {
 
     from(sourceSets.main.resources.srcDirs) {
         exclude "fabric.mod.json"
+    }
+
+    doLast {
+        final long jsonMinifyStart = System.currentTimeMillis()
+        long jsonMinified = 0
+        long jsonBytesSaved = 0
+
+        fileTree(dir: outputs.files.asPath, include: '**/*.json').each {
+            final File file = it
+            jsonMinified++
+            final long oldLength = file.length()
+            file.text = JsonOutput.toJson(new JsonSlurper().parse(file))
+            jsonBytesSaved += oldLength - file.length()
+        }
+
+        println('Minified ' + jsonMinified + ' json files. Saved ' + jsonBytesSaved + ' bytes. Took ' + (System.currentTimeMillis() - jsonMinifyStart) + 'ms.')
     }
 }
 
