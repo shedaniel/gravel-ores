@@ -39,12 +39,12 @@ import static net.minecraft.sound.BlockSoundGroup.GRAVEL;
 
 public final class GravelOreBlock extends GravelBlock {
     private final Pair<Integer, Integer> xpLimits;
-
+    
     public GravelOreBlock(final int miningLevel, final Pair<Integer, Integer> xpLimits) {
         super(FabricBlockSettings.copyOf(Blocks.GRAVEL).requiresTool().breakByTool(SHOVELS, miningLevel).strength(0.5F).sounds(GRAVEL));
         this.xpLimits = xpLimits;
     }
-
+    
     @Override
     public BlockState getStateForNeighborUpdate(final BlockState state, final Direction direction, final BlockState newState, final WorldAccess world, final BlockPos pos, final BlockPos posFrom) {
         if (breaksOnAnySide(world, pos) && !world.isClient()) {
@@ -52,21 +52,24 @@ public final class GravelOreBlock extends GravelBlock {
             return Blocks.AIR.getDefaultState();
         } else return super.getStateForNeighborUpdate(state, direction, newState, world, pos, posFrom);
     }
-
+    
     @Override
     public void onLanding(final World world, final BlockPos pos, final BlockState fallingBlockState, final BlockState currentStateInPos, final FallingBlockEntity fallingBlockEntity) {
         super.onLanding(world, pos, fallingBlockState, currentStateInPos, fallingBlockEntity);
         if (shouldBreak(world, pos, currentStateInPos) && !world.isClient()) world.breakBlock(pos, true);
     }
-
+    
     @Override
     public BlockState getPlacementState(final ItemPlacementContext context) {
-        context.getWorld().setBlockState(context.getBlockPos(), getDefaultState());
-        context.getWorld().breakBlock(context.getBlockPos(), true);
-        context.getStack().decrement(1);
-        return shouldBreak(context.getWorld(), context.getBlockPos(), context.getWorld().getBlockState(context.getBlockPos())) ? Blocks.AIR.getDefaultState() : super.getPlacementState(context);
+        if (shouldBreak(context.getWorld(), context.getBlockPos(), context.getWorld().getBlockState(context.getBlockPos()))) {
+            context.getWorld().setBlockState(context.getBlockPos(), getDefaultState());
+            context.getWorld().breakBlock(context.getBlockPos(), true);
+            context.getStack().decrement(1);
+            return Blocks.AIR.getDefaultState();
+        }
+        return super.getPlacementState(context);
     }
-
+    
     @Override
     public void onStacksDropped(final BlockState state, final ServerWorld world, final BlockPos pos, final ItemStack stack) {
         super.onStacksDropped(state, world, pos, stack);
@@ -75,11 +78,11 @@ public final class GravelOreBlock extends GravelBlock {
             if (i > 0) dropExperience(world, pos, i);
         }
     }
-
+    
     private static boolean shouldBreak(final BlockView world, final BlockPos pos, final BlockState state) {
         return state.getFluidState().isIn(FluidTags.WATER) || breaksOnAnySide(world, pos);
     }
-
+    
     private static boolean breaksOnAnySide(final BlockView world, final BlockPos pos) {
         final BlockPos.Mutable mutable = pos.mutableCopy();
         for (Direction direction : Direction.values()) {
@@ -87,10 +90,11 @@ public final class GravelOreBlock extends GravelBlock {
             if (direction != Direction.DOWN || state.getFluidState().isIn(FluidTags.WATER)) {
                 mutable.set(pos, direction);
                 state = world.getBlockState(mutable);
-                if (state.getFluidState().isIn(FluidTags.WATER) && state.getFluidState().getLevel() > 1 && !state.isSideSolidFullSquare(world, pos, direction.getOpposite())) return true;
+                if (state.getFluidState().isIn(FluidTags.WATER) && state.getFluidState().getLevel() > 1 && !state.isSideSolidFullSquare(world, pos, direction.getOpposite()))
+                    return true;
             }
         }
-
+        
         return false;
     }
 }

@@ -41,9 +41,11 @@ public final class GravelOres implements ModInitializer {
     public static final RegistryKey<ConfiguredFeature<?, ?>> REDSTONE_GRAVEL_KEY = RegistryKey.of(CONFIGURED_FEATURE_WORLDGEN, register("redstone_gravel", 2, new Pair<>(1, 5)));
     public static final RegistryKey<ConfiguredFeature<?, ?>> EMERALD_GRAVEL_KEY = RegistryKey.of(CONFIGURED_FEATURE_WORLDGEN, register("emerald_gravel", 2, new Pair<>(3, 7)));
     public static final RegistryKey<ConfiguredFeature<?, ?>> DIAMOND_GRAVEL_KEY = RegistryKey.of(CONFIGURED_FEATURE_WORLDGEN, register("diamond_gravel", 2, new Pair<>(3, 7)));
-
+    
     @Override
     public void onInitialize() {
+        Registry.register(Registry.DECORATOR, new Identifier(MOD_ID, "surface_gen"), new SurfaceGenDecorator(SurfaceGenConfig.CODEC));
+        Registry.register(Registry.FEATURE, new Identifier(MOD_ID, "surface_gen"), new SurfaceGenFeature(SurfaceGenFeatureConfig.CODEC));
         DynamicRegistryCallback.callback(Registry.BIOME_KEY).register((manager, key, biome) -> {
             if (biome.getCategory() == Biome.Category.NETHER || biome.getCategory() == Biome.Category.THEEND) return;
             BiomesRegistry.registerFeature(manager, biome, GenerationStep.Feature.UNDERGROUND_ORES, COAL_GRAVEL_KEY);
@@ -55,7 +57,7 @@ public final class GravelOres implements ModInitializer {
             BiomesRegistry.registerFeature(manager, biome, GenerationStep.Feature.UNDERGROUND_ORES, DIAMOND_GRAVEL_KEY);
         });
     }
-
+    
     private static Identifier register(final String name, final int miningLevel, final Pair<Integer, Integer> xpLimits) {
         final Identifier identifier = new Identifier(MOD_ID, name);
         Registry.register(Registry.ITEM, identifier, new BlockItem(Registry.register(Registry.BLOCK, identifier, new GravelOreBlock(miningLevel, xpLimits)), SETTINGS));

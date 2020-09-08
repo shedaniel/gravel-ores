@@ -30,12 +30,20 @@
               "type": "item",
               "functions": [
                 {
-                  "function": "apply_bonus",
-                  "enchantment": "fortune",
-                  "formula": "ore_drops"
+                  "function": "minecraft:set_count",
+                  "count": {
+                    "min": 4.0,
+                    "max": 9.0,
+                    "type": "minecraft:uniform"
+                  }
                 },
                 {
-                  "function": "explosion_decay"
+                  "function": "minecraft:apply_bonus",
+                  "enchantment": "minecraft:fortune",
+                  "formula": "minecraft:ore_drops"
+                },
+                {
+                  "function": "minecraft:explosion_decay"
                 }
               ],
               "name": "lapis_lazuli"

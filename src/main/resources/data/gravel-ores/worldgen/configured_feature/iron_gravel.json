@@ -2,44 +2,23 @@
   "config": {
     "feature": {
       "config": {
-        "feature": {
-          "config": {
-            "feature": {
-              "config": {
-                "target": {
-                  "tag": "base_stone_overworld",
-                  "predicate_type": "tag_match"
-                },
-                "state": {
-                  "Name": "stone"
-                },
-                "size": 9
-              },
-              "type": "ore"
-            },
-            "decorator": {
-              "config": {
-                "bottom_offset": 65,
-                "top_offset": 0,
-                "maximum": 191
-              },
-              "type": "range"
-            }
-          },
-          "type": "decorated"
+        "oreState": {
+          "Name": "gravel-ores:iron_gravel"
         },
-        "decorator": {
-          "config": {},
-          "type": "square"
-        }
+        "startRadius": 0,
+        "baseState": {
+          "Name": "minecraft:gravel"
+        },
+        "baseStatePercentage": 0.4
       },
-      "type": "decorated"
+      "type": "gravel-ores:surface_gen"
     },
     "decorator": {
       "config": {
-        "count": 6
+        "count": 3,
+        "possibility": 0.006
       },
-      "type": "count"
+      "type": "gravel-ores:surface_gen"
     }
   },
   "type": "decorated"

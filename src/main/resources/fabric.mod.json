@@ -21,9 +21,6 @@
       "me.shedaniel.gravelores.GravelOres"
     ]
   },
-  "mixins": [
-    "gravel-ores.mixins.json"
-  ],
   "depends": {
     "fabricloader": ">=0.9.0",
     "fabric": ">=0.18.0",

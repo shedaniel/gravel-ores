@@ -5,42 +5,13 @@
       "rolls": 1,
       "entries": [
         {
-          "type": "alternatives",
-          "children": [
+          "type": "item",
+          "functions": [
             {
-              "type": "item",
-              "conditions": [
-                {
-                  "condition": "match_tool",
-                  "predicate": {
-                    "enchantments": [
-                      {
-                        "enchantment": "silk_touch",
-                        "levels": {
-                          "min": 1
-                        }
-                      }
-                    ]
-                  }
-                }
-              ],
-              "name": "gravel-ores:iron_gravel"
-            },
-            {
-              "type": "item",
-              "functions": [
-                {
-                  "function": "apply_bonus",
-                  "enchantment": "fortune",
-                  "formula": "ore_drops"
-                },
-                {
-                  "function": "explosion_decay"
-                }
-              ],
-              "name": "iron_ingot"
+              "function": "explosion_decay"
             }
-          ]
+          ],
+          "name": "gravel-ores:iron_gravel"
         }
       ]
     }

@@ -30,15 +30,26 @@
               "type": "item",
               "functions": [
                 {
-                  "function": "apply_bonus",
-                  "enchantment": "fortune",
-                  "formula": "ore_drops"
+                  "function": "minecraft:set_count",
+                  "count": {
+                    "min": 4.0,
+                    "max": 5.0,
+                    "type": "minecraft:uniform"
+                  }
                 },
                 {
-                  "function": "explosion_decay"
+                  "function": "minecraft:apply_bonus",
+                  "enchantment": "minecraft:fortune",
+                  "formula": "minecraft:uniform_bonus_count",
+                  "parameters": {
+                    "bonusMultiplier": 1
+                  }
+                },
+                {
+                  "function": "minecraft:explosion_decay"
                 }
               ],
-              "name": "diamond"
+              "name": "redstone"
             }
           ]
         }
