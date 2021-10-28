@@ -1,0 +1,25 @@
+{
+  "config": {
+    "feature": {
+      "config": {
+        "oreState": {
+          "Name": "gravel-ores:copper_gravel"
+        },
+        "startRadius": 0,
+        "baseState": {
+          "Name": "minecraft:gravel"
+        },
+        "baseStatePercentage": 0.4
+      },
+      "type": "gravel-ores:surface_gen"
+    },
+    "decorator": {
+      "config": {
+        "count": 3,
+        "possibility": 0.006
+      },
+      "type": "gravel-ores:surface_gen"
+    }
+  },
+  "type": "decorated"
+}

@@ -4,8 +4,8 @@ import com.mojang.serialization.Codec;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.StructureWorldAccess;
-import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.util.FeatureContext;
 
 import java.util.Random;
 
@@ -15,7 +15,11 @@ public class SurfaceGenFeature extends Feature<SurfaceGenFeatureConfig> {
     }
     
     @Override
-    public boolean generate(StructureWorldAccess world, ChunkGenerator generator, Random random, BlockPos pos, SurfaceGenFeatureConfig config) {
+    public boolean generate(FeatureContext<SurfaceGenFeatureConfig> context) {
+        StructureWorldAccess world = context.getWorld();
+        BlockPos pos = context.getOrigin();
+        SurfaceGenFeatureConfig config = context.getConfig();
+        Random random = context.getRandom();
         while (true) {
             label48:
             {
@@ -25,7 +29,7 @@ public class SurfaceGenFeature extends Feature<SurfaceGenFeatureConfig> {
                     }
                     
                     BlockState block = world.getBlockState(pos.down());
-                    if (!isSoil(block.getBlock()) && !isStone(block.getBlock()) && !block.isOpaque()) {
+                    if (!isSoil(block) && !isStone(block) && !block.isOpaque()) {
                         break label48;
                     }
                 }

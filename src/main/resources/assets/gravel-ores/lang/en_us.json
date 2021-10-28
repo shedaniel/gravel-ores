@@ -5,5 +5,6 @@
   "block.gravel-ores.lapis_gravel": "Lapis Gravel",
   "block.gravel-ores.redstone_gravel": "Redstone Gravel",
   "block.gravel-ores.emerald_gravel": "Emerald Gravel",
-  "block.gravel-ores.diamond_gravel": "Diamond Gravel"
+  "block.gravel-ores.diamond_gravel": "Diamond Gravel",
+  "block.gravel-ores.copper_gravel": "Copper Gravel"
 }

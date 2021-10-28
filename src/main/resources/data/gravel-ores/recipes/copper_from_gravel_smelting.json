@@ -1,0 +1,9 @@
+{
+  "type": "smelting",
+  "ingredient": {
+    "item": "gravel-ores:copper_gravel"
+  },
+  "result": "copper_ingot",
+  "experience": 1.0,
+  "cookingtime": 200
+}

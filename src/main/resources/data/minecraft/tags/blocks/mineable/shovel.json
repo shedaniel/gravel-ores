@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gravel-ores:coal_gravel",
+    "gravel-ores:iron_gravel",
+    "gravel-ores:copper_gravel",
+    "gravel-ores:gold_gravel",
+    "gravel-ores:lapis_gravel",
+    "gravel-ores:redstone_gravel",
+    "gravel-ores:emerald_gravel",
+    "gravel-ores:diamond_gravel"
+  ]
+}
